@@ -1,0 +1,41 @@
+kind: Pod
+apiVersion: v1
+metadata:
+  name: nginx
+  labels:
+    app: nginx-app
+spec:
+  containers:
+    - name: myfrontend
+      image: mcr.microsoft.com/oss/nginx/nginx:1.15.12-alpine
+      ports:
+      - containerPort: 80
+  nodeSelector:
+    "beta.kubernetes.io/os": linux
+---
+kind: Pod
+apiVersion: v1
+metadata:
+  name: function2
+  labels:
+    app: nginx-app
+spec:
+  containers:
+    - name: function2
+      image: crgarakspublicacr.azurecr.io/function1
+      ports:
+      - containerPort: 80
+  nodeSelector:
+    "beta.kubernetes.io/os": linux
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: myapp
+spec:
+  selector:
+    app: nginx-app
+  ports:
+  - port: 8080
+    targetPort: 80
+  type: LoadBalancer
