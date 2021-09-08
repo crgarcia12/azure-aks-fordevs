@@ -13,16 +13,28 @@ spec:
   nodeSelector:
     "beta.kubernetes.io/os": linux
 ---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-service
+spec:
+  selector:
+    app: functionapp
+  ports:
+  - port: 8080
+    targetPort: 80
+  type: LoadBalancer
+---
 kind: Pod
 apiVersion: v1
 metadata:
   name: function2
   labels:
-    app: nginx-app
+    app: functionapp
 spec:
   containers:
     - name: function2
-      image: crgarakspublicacr.azurecr.io/function1
+      image: crgarakspublicacr.azurecr.io/function2
       ports:
       - containerPort: 80
   nodeSelector:
@@ -31,10 +43,10 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: myapp
+  name: functionapp-service
 spec:
   selector:
-    app: nginx-app
+    app: functionapp
   ports:
   - port: 8080
     targetPort: 80
